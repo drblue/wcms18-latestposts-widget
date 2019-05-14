@@ -100,13 +100,12 @@ class MyFirstWidget extends WP_Widget {
 				<?php _e('Content:'); ?>
 			</label>
 
-			<input
+			<textarea
 				class="widefat"
 				id="<?php echo $this->get_field_id('content'); ?>"
 				name="<?php echo $this->get_field_name('content'); ?>"
-				type="text"
-				value="<?php echo $content; ?>"
-			/>
+				rows="10"
+			><?php echo $content; ?></textarea>
 		 </p>
 		 <!-- /content -->
 	<?php
