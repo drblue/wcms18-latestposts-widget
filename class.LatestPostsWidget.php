@@ -42,7 +42,7 @@ class LatestPostsWidget extends WP_Widget {
 		// content
 		// this is the code from wcms18-latestposts shortcode plugin
 		$posts = new WP_Query([
-			'posts_per_page' => 3,
+			'posts_per_page' => $instance['num_posts'],
 		]);
 
 		// $output = "<h2>" . esc_html($atts['title']) . "</h2>";
@@ -94,6 +94,12 @@ class LatestPostsWidget extends WP_Widget {
 			$title = __('Latest Posts', 'wcms18-latestposts-widget');
 		}
 
+		if (isset($instance['num_posts'])) {
+			$num_posts = $instance['num_posts'];
+		} else {
+			$num_posts = 3;
+		}
+
 		?>
 
 		<!-- title -->
@@ -110,6 +116,25 @@ class LatestPostsWidget extends WP_Widget {
 				name="<?php echo $this->get_field_name('title'); ?>"
 				type="text"
 				value="<?php echo esc_attr($title); ?>"
+			/>
+		 </p>
+		 <!-- /title -->
+
+		<!-- number of posts to show -->
+		<p>
+			<label
+				for="<?php echo $this->get_field_name('num_posts'); ?>"
+			>
+				<?php _e('Number of posts to show:'); ?>
+			</label>
+
+			<input
+				class="widefat"
+				id="<?php echo $this->get_field_id('num_posts'); ?>"
+				name="<?php echo $this->get_field_name('num_posts'); ?>"
+				type="number"
+				min="1"
+				value="<?php echo $num_posts; ?>"
 			/>
 		 </p>
 		 <!-- /title -->
@@ -132,6 +157,10 @@ class LatestPostsWidget extends WP_Widget {
 		$instance['title'] = (!empty($new_instance['title']))
 			? strip_tags($new_instance['title'])
 			: '';
+
+		$instance['num_posts'] = (!empty($new_instance['num_posts']) && $new_instance['num_posts'] > 0)
+			? intval($new_instance['num_posts'])
+			: 3;
 
 		return $instance;
 	}
