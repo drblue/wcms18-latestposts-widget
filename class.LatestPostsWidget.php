@@ -55,16 +55,16 @@ class LatestPostsWidget extends WP_Widget {
 				$output .= get_the_title();
 				$output .= "</a>";
 
-				/*
-				$output .= "<small>";
-				$output .= " in ";
-				$output .= get_the_category_list(', ');
-				$output .= " by ";
-				$output .= get_the_author();
-				$output .= " ";
-				$output .= human_time_diff(get_the_time('U')) . ' ago';
-				$output .= "</small>";
-				*/
+				if ($instance['show_author']) {
+					$output .= "<small>";
+					// $output .= " in ";
+					// $output .= get_the_category_list(', ');
+					$output .= " by ";
+					$output .= get_the_author();
+					// $output .= " ";
+					// $output .= human_time_diff(get_the_time('U')) . ' ago';
+					$output .= "</small>";
+				}
 
 				$output .= "</li>";
 			}
@@ -99,6 +99,10 @@ class LatestPostsWidget extends WP_Widget {
 		} else {
 			$num_posts = 3;
 		}
+
+		$show_author = isset($instance['show_author'])
+			? $instance['show_author']
+			: false;
 
 		?>
 
@@ -137,7 +141,26 @@ class LatestPostsWidget extends WP_Widget {
 				value="<?php echo $num_posts; ?>"
 			/>
 		 </p>
-		 <!-- /title -->
+		 <!-- /number of posts to show -->
+
+		<!-- show author -->
+		<p>
+			<label
+				for="<?php echo $this->get_field_name('show_author'); ?>"
+			>
+				<?php _e('Show author?'); ?>
+			</label>
+
+			<input
+				class="widefat"
+				id="<?php echo $this->get_field_id('show_author'); ?>"
+				name="<?php echo $this->get_field_name('show_author'); ?>"
+				type="checkbox"
+				value="1"
+				<?php echo $show_author ? 'checked="checked"' : ''; ?>
+			/>
+		 </p>
+		 <!-- /show author -->
 	<?php
 	}
 
@@ -161,6 +184,10 @@ class LatestPostsWidget extends WP_Widget {
 		$instance['num_posts'] = (!empty($new_instance['num_posts']) && $new_instance['num_posts'] > 0)
 			? intval($new_instance['num_posts'])
 			: 3;
+
+		$instance['show_author'] = (!empty($new_instance['show_author']))
+			? true
+			: false;
 
 		return $instance;
 	}
