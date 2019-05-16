@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Adds MyFirstWidget widget.
+ * Adds LatestPostsWidget widget.
  */
 
-class MyFirstWidget extends WP_Widget {
+class LatestPostsWidget extends WP_Widget {
 
 	/**
 	 * Register widget with WordPress.
 	 */
 	public function __construct() {
 		parent::__construct(
-			'my_first_widget', // Base ID
-			'My First Widget', // Name
+			'wcms18-latestposts-widget', // Base ID
+			'WCMS18 Latest Posts', // Name
 			[
-				'description' => __('A Sample Widget', 'myfirstwidget'),
+				'description' => __('A Widget for displaying the latest posts', 'wcms18-latestposts-widget'),
 			] // Args
 		);
 	}
@@ -40,7 +40,41 @@ class MyFirstWidget extends WP_Widget {
 		}
 
 		// content
-		echo $instance['content'];
+		// this is the code from wcms18-latestposts shortcode plugin
+		$posts = new WP_Query([
+			'posts_per_page' => 3,
+		]);
+
+		// $output = "<h2>" . esc_html($atts['title']) . "</h2>";
+		if ($posts->have_posts()) {
+			$output = "<ul>";
+			while ($posts->have_posts()) {
+				$posts->the_post();
+				$output .= "<li>";
+				$output .= "<a href='" . get_the_permalink() . "'>";
+				$output .= get_the_title();
+				$output .= "</a>";
+
+				/*
+				$output .= "<small>";
+				$output .= " in ";
+				$output .= get_the_category_list(', ');
+				$output .= " by ";
+				$output .= get_the_author();
+				$output .= " ";
+				$output .= human_time_diff(get_the_time('U')) . ' ago';
+				$output .= "</small>";
+				*/
+
+				$output .= "</li>";
+			}
+			wp_reset_postdata();
+			$output .= "</ul>";
+		} else {
+			$output .= "No latest posts available.";
+		}
+		// end code from wcms18-latestposts shortcode plugin
+		echo $output;
 
 		// close widget
 		echo $after_widget;
@@ -57,20 +91,8 @@ class MyFirstWidget extends WP_Widget {
 		if (isset($instance['title'])) {
 			$title = $instance['title'];
 		} else {
-			$title = __('New title', 'myfirstwidget');
+			$title = __('Latest Posts', 'wcms18-latestposts-widget');
 		}
-
-		/*
-		if (isset($instance['content'])) {
-			$content = $instance['content'];
-		} else {
-			$content = '';
-		}
-		*/
-
-		$content = isset($instance['content'])
-			? $instance['content']
-			: '';
 
 		?>
 
@@ -91,23 +113,6 @@ class MyFirstWidget extends WP_Widget {
 			/>
 		 </p>
 		 <!-- /title -->
-
-		 <!-- content -->
-		 <p>
-			<label
-				for="<?php echo $this->get_field_name('content'); ?>"
-			>
-				<?php _e('Content:'); ?>
-			</label>
-
-			<textarea
-				class="widefat"
-				id="<?php echo $this->get_field_id('content'); ?>"
-				name="<?php echo $this->get_field_name('content'); ?>"
-				rows="10"
-			><?php echo $content; ?></textarea>
-		 </p>
-		 <!-- /content -->
 	<?php
 	}
 
@@ -128,11 +133,7 @@ class MyFirstWidget extends WP_Widget {
 			? strip_tags($new_instance['title'])
 			: '';
 
-		$instance['content'] = !empty($new_instance['content'])
-			? $new_instance['content']
-			: '';
-
 		return $instance;
 	}
 
-} // class MyFirstWidget
+} // class LatestPostsWidget
