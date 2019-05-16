@@ -55,14 +55,14 @@ class LatestPostsWidget extends WP_Widget {
 				$output .= get_the_title();
 				$output .= "</a>";
 
-				if ($instance['show_author']) {
+				if ($instance['show_metadata']) {
 					$output .= "<small>";
-					// $output .= " in ";
-					// $output .= get_the_category_list(', ');
+					$output .= " in ";
+					$output .= get_the_category_list(', ');
 					$output .= " by ";
 					$output .= get_the_author();
-					// $output .= " ";
-					// $output .= human_time_diff(get_the_time('U')) . ' ago';
+					$output .= " ";
+					$output .= human_time_diff(get_the_time('U')) . ' ago';
 					$output .= "</small>";
 				}
 
@@ -100,8 +100,8 @@ class LatestPostsWidget extends WP_Widget {
 			$num_posts = 3;
 		}
 
-		$show_author = isset($instance['show_author'])
-			? $instance['show_author']
+		$show_metadata = isset($instance['show_metadata'])
+			? $instance['show_metadata']
 			: false;
 
 		?>
@@ -143,24 +143,24 @@ class LatestPostsWidget extends WP_Widget {
 		 </p>
 		 <!-- /number of posts to show -->
 
-		<!-- show author -->
+		<!-- show metadata about post -->
 		<p>
 			<label
-				for="<?php echo $this->get_field_name('show_author'); ?>"
+				for="<?php echo $this->get_field_name('show_metadata'); ?>"
 			>
-				<?php _e('Show author?'); ?>
+				<?php _e('Show metadata?'); ?>
 			</label>
 
 			<input
 				class="widefat"
-				id="<?php echo $this->get_field_id('show_author'); ?>"
-				name="<?php echo $this->get_field_name('show_author'); ?>"
+				id="<?php echo $this->get_field_id('show_metadata'); ?>"
+				name="<?php echo $this->get_field_name('show_metadata'); ?>"
 				type="checkbox"
 				value="1"
-				<?php echo $show_author ? 'checked="checked"' : ''; ?>
+				<?php echo $show_metadata ? 'checked="checked"' : ''; ?>
 			/>
 		 </p>
-		 <!-- /show author -->
+		 <!-- /show metadata about post -->
 	<?php
 	}
 
@@ -185,9 +185,7 @@ class LatestPostsWidget extends WP_Widget {
 			? intval($new_instance['num_posts'])
 			: 3;
 
-		$instance['show_author'] = (!empty($new_instance['show_author']))
-			? true
-			: false;
+		$instance['show_metadata'] = (!empty($new_instance['show_metadata']));
 
 		return $instance;
 	}
